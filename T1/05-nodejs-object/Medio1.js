@@ -1,0 +1,1 @@
+const invert = o => Object.fromEntries(Object.entries(o).map(x => x.reverse()));
