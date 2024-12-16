@@ -1,0 +1,31 @@
+{
+  "name": "09-npm-script",
+  "version": "1.0.0",
+  "description": "Project to practice npm scripts",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "clear:modules": "rimraf **/node_modules",
+    "clear:locks": "rimraf **/package-lock.json",
+    "clear": "npm run clear:test && npm run clear:locks && npm run clear:modules",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clear:env": "rimraf **/.env",
+    "copy:env": "for d in workspaces/*; do cp ${d}/.env.template ${d}/.env; done",
+    "date": "date",
+    "crear": "mkdir files",
+    "crear:js": "cd files && touch",
+    "crear:carpeta": "cd files && mkdir",
+    "borrar": "rm -r files",
+    "borrar:js": "cd files && rm *.js",
+    "imprime:azul": "node azul.js",
+    "imprime:roja": "node rojo.js",
+    "imprime:verde": "node verde.js"
+  },
+  "author": "Paco",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^5.3.0"
+  }
+}
