@@ -1,0 +1,698 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+      "title": "Notes API",
+      "version": "1.0.0",
+      "description": "API for managing notes"
+  },
+  "components": {
+      "securitySchemes": {
+          "bearerAuth": {
+              "type": "http",
+              "scheme": "bearer",
+              "bearerFormat": "JWT"
+          }
+      },
+      "schemas": {
+          "Note": {
+              "type": "object",
+              "properties": {
+                  "id": {
+                      "type": "string"
+                  },
+                  "title": {
+                      "type": "string"
+                  },
+                  "content": {
+                      "type": "string"
+                  }
+              }
+          },
+          "NoteInput": {
+              "type": "object",
+              "properties": {
+                  "title": {
+                      "type": "string"
+                  },
+                  "content": {
+                      "type": "string"
+                  }
+              },
+              "required": [
+                  "title",
+                  "content"
+              ]
+          },
+          "Usuario": {
+            "type": "object",
+            "properties": {
+                "usuario": {
+                    "type": "string"
+                },
+                "contraseña": {
+                    "type": "string"
+                }
+            }
+        },
+          "NoteNameInput": {
+              "type": "object",
+              "properties": {
+                  "title": {
+                      "type": "string"
+                  }
+              },
+              "required": [
+                  "title"
+              ]
+          }
+      }
+  },
+  "paths": {
+    "/login": {
+        "post": {
+            "summary": "Get token to access the API",
+            "requestBody": {
+                "required": true,
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "$ref": "#/components/schemas/Usuario"
+                        }
+                    }
+                }
+            },
+            "responses": {
+                "200": {
+                    "description": "Autenticacion exitosa",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "mensage": {
+                                        "type": "string"
+                                    },
+                                    "token": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Title and content are required",
+                    "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "message": "Title and content are required"
+                              }
+                          }
+                      }
+                  }
+                },
+                "409": {
+                    "description": "Note already exists",
+                    "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "message": "Note already exists"
+                              }
+                          }
+                      }
+                  }
+                },
+                "500": {
+                    "description": "Error creating the note",
+                    "content": {
+                      "application/json": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "message": "Error creating the note"
+                              }
+                          }
+                      }
+                  }
+                }
+            },
+            "parameters": [
+                {
+                    "name": "token",
+                    "in": "header",
+                    "required": true,
+                    "description": "Authentication token",
+                    "schema": {
+                        "type": "string"
+                    }
+                }
+            ]
+        }
+    },
+      "/notes": {
+          "get": {
+              "summary": "Get all notes",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "OK",
+                      "content": {
+                          "application/json": {
+                              "example": {
+                                  "notes": "[notes available]",
+                                  "pageInfo": {
+                                      "currentPage": "X",
+                                      "totalPages": "X"
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "No notes available on this page",
+                      "content": {
+                          "application/json": {
+                              "example": {
+                                  "message": "No notes available on this page."
+                              }
+                          }
+                      }
+                  },
+                  "500": {
+                      "description": "Error reading the notes directory",
+                      "content": {
+                          "application/json": {
+                              "example": {
+                                  "message": "Error reading the notes directory.",
+                                  "error": "[error details]"
+                              }
+                          }
+                      }
+                  }
+              },
+              "parameters": [
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ]
+          },
+          "post": {
+              "summary": "Create a new note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/NoteInput"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "201": {
+                      "description": "Note created",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "id": {
+                                          "type": "string"
+                                      },
+                                      "title": {
+                                          "type": "string"
+                                      },
+                                      "content": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "400": {
+                      "description": "Title and content are required",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Title and content are required"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "409": {
+                      "description": "Note already exists",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note already exists"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Error creating the note",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Error creating the note"
+                                }
+                            }
+                        }
+                    }
+                  }
+              },
+              "parameters": [
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ]
+          }
+      },
+      "/notes/{noteName}": {
+          "get": {
+              "summary": "Get a specific note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "parameters": [
+                  {
+                      "name": "noteName",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Successful operation",
+                      "content": {
+                          "application/json": {
+                              "schema": {
+                                  "type": "object",
+                                  "properties": {
+                                      "noteName": {
+                                          "type": "string"
+                                      },
+                                      "content": {
+                                          "type": "string"
+                                      }
+                                  }
+                              }
+                          }
+                      }
+                  },
+                  "404": {
+                      "description": "Note not found",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note not found"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Error reading the note",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Error reading the note"
+                                }
+                            }
+                        }
+                    }
+                  }
+              }
+          },
+          "patch": {
+              "summary": "Edit a specific note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "parameters": [
+                  {
+                      "name": "noteName",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/NoteInput"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Note updated successfully",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note updated successfully"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "404": {
+                      "description": "Note not found",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note not found"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Error updating the note",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Error updating the note"
+                                }
+                            }
+                        }
+                    }
+                  }
+              }
+          },
+          "delete": {
+              "summary": "Delete a specific note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "parameters": [
+                  {
+                      "name": "noteName",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "responses": {
+                  "200": {
+                      "description": "Note deleted successfully",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note deleted successfully"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "404": {
+                      "description": "Note not found",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note not found"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Error deleting note",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Error deleting the note"
+                                }
+                            }
+                        }
+                    }
+                  }
+              }
+          }
+      },
+      "/notes/{noteName}/name": {
+          "patch": {
+              "summary": "Edit the name of a specific note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "parameters": [
+                  {
+                      "name": "noteName",
+                      "in": "path",
+                      "required": true,
+                      "schema": {
+                          "type": "string"
+                      }
+                  },
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "application/json": {
+                          "schema": {
+                              "$ref": "#/components/schemas/NoteNameInput"
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "Note name updated successfully",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note name updated successfully"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "404": {
+                      "description": "Note not found",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Note not found"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "409": {
+                      "description": "A note with the new title already exists",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "A note with the new title already exists"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Error updating the note name",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Error updating the note"
+                                }
+                            }
+                        }
+                    }
+                  }
+              }
+          }
+      },
+      "/notes/upload": {
+          "post": {
+              "summary": "Upload a note",
+              "security": [
+                  {
+                      "bearerAuth": []
+                  }
+              ],
+              "requestBody": {
+                  "required": true,
+                  "content": {
+                      "multipart/form-data": {
+                          "schema": {
+                              "type": "object",
+                              "properties": {
+                                  "file": {
+                                      "type": "string",
+                                      "format": "binary"
+                                  }
+                              }
+                          }
+                      }
+                  }
+              },
+              "responses": {
+                  "200": {
+                      "description": "File uploaded successfully",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "File uploaded successfully"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "400": {
+                      "description": "No file uploaded",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "No file uploaded"
+                                }
+                            }
+                        }
+                    }
+                  },
+                  "500": {
+                      "description": "Internal server error",
+                      "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "message": "Internal server error"
+                                }
+                            }
+                        }
+                    }
+                  }
+              },
+              "parameters": [
+                  {
+                      "name": "token",
+                      "in": "header",
+                      "required": true,
+                      "description": "Authentication token",
+                      "schema": {
+                          "type": "string"
+                      }
+                  }
+              ]
+          }
+      }
+  }
+}

@@ -1,0 +1,32 @@
+{
+	"terminal.integrated.fontFamily": "monospace",
+	"[java]": {
+			"editor.suggest.snippetsPreventQuickSuggestions": false
+	},
+	"[python]": {
+			"editor.formatOnType": true
+	},
+	"explorer.confirmDelete": false,
+	"editor.inlineSuggest.enabled": true,
+	"security.workspace.trust.untrustedFiles": "open",
+	"editor.fontLigatures": true,
+	"editor.fontFamily": "Jetbrains Mono",
+	"workbench.productIconTheme": "fluent-icons",
+	"window.zoomLevel": 1,
+	"explorer.confirmDragAndDrop": false,
+	"github.copilot.enable": {
+			"*": false,
+			"plaintext": false,
+			"markdown": false,
+			"scminput": false
+	},
+	"editor.minimap.enabled": false,
+	"workbench.colorTheme": "Theme Mix",
+	"editor.insertSpaces": false,
+	"editor.tabSize": 2,
+	"editor.codeActionsOnSave": {
+		"source.fixAll": "explicit"
+	},
+	"terminal.integrated.tabs.title": "${workspaceFolder}",
+	"editor.dragAndDrop": false
+}
