@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSockets Example</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.3/socket.io.js"></script>
+  <script>
+
+    window.onload = init;
+
+    const socket = io();
+
+    socket.on('single', (data) => {
+      console.log(data);
+    });
+    
+    const createLi = (text) => {
+      const li = document.createElement('li');
+      li.innerText = text;
+      return li;
+    }
+
+    function init(){
+      const ul = document.getElementById('list');
+
+      socket.on('all', (data) => {
+        console.log(data);
+        ul.appendChild(createLi(data));
+      });
+
+      const dateText = document.getElementById('date');
+      const date = new Date();
+      dateText.innerText = date.toLocaleString();
+
+      socket.on('date', (data) => {
+        dateText.innerText = data;
+      });
+
+    }
+
+    function send(){
+      const input = document.getElementById('input');
+      socket.emit('echo', input.value);
+    }
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+    });
+  </script>
+</head>
+<body>
+  <h1>WebSockets Example</h1>
+  <button id="btn" onclick="send()">Click me!</button>
+  <input type="text" id="input">
+  <ul id="list"></ul>
+</body>
+</html>
